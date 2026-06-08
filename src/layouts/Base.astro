@@ -1,0 +1,131 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  themeClass: string;
+  fonts: string;
+  accent?: string;
+  cursor?: boolean;
+}
+
+// Global reset + reveal/lenis primitives. Imported here as a side effect so it
+// applies to every page (Astro bundles frontmatter CSS imports globally).
+import '../styles/global.scss';
+
+const {
+  title,
+  description = 'Portafolio de María José Arévalo. Multimedia y Producción Audiovisual, UDLA Quito. Diseño, fotografía y audiovisual.',
+  themeClass,
+  fonts,
+  accent = '#111111',
+  cursor = false,
+} = Astro.props;
+
+const favicon =
+  "data:image/svg+xml," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='${accent}'/><text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' font-family='Georgia,serif' font-size='30' font-style='italic' fill='white'>mj</text></svg>`,
+  );
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="María José Arévalo" />
+    <meta name="theme-color" content={accent} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href={favicon} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={fonts} />
+    <script is:inline>
+      // Confirm JS + motion support before paint so reveals never ship hidden
+      // for no-JS or reduced-motion visitors.
+      document.documentElement.classList.add('has-js');
+      try {
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('anim');
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body class={themeClass}>
+    <div class="progress" data-progress aria-hidden="true"></div>
+    {
+      cursor && (
+        <div class="cursor" data-cursor aria-hidden="true">
+          <span class="cursor-ring" />
+          <span class="cursor-dot" />
+        </div>
+      )
+    }
+    <slot />
+
+    <script>
+      import { initMotion } from '../scripts/motion';
+      const start = () => initMotion();
+      if (document.readyState !== 'loading') start();
+      else document.addEventListener('DOMContentLoaded', start);
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .progress {
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 3px;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    background: var(--accent, currentColor);
+    z-index: 80;
+  }
+
+  .cursor {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 90;
+    opacity: 0;
+    mix-blend-mode: difference;
+  }
+  .cursor-dot,
+  .cursor-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+  }
+  .cursor-dot {
+    width: 7px;
+    height: 7px;
+    background: #fff;
+  }
+  .cursor-ring {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #fff;
+    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  }
+  .cursor.is-grow .cursor-ring {
+    width: 64px;
+    height: 64px;
+    opacity: 0.6;
+  }
+  .cursor.is-grow .cursor-dot {
+    opacity: 0;
+  }
+  @media (hover: none) {
+    .cursor {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,43 @@
+name: Deploy a GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build con Astro
+        uses: withastro/action@v3
+        # `path: .` => el proyecto Astro está en la raíz del repositorio.
+        # Si lo guardas en una subcarpeta, cambia `path` a esa carpeta.
+        env:
+          # Este repo es <usuario>.github.io (sitio de usuario), se sirve en la
+          # raíz, por eso BASE_PATH es "/". Para un repo de proyecto sería
+          # /${{ github.event.repository.name }}.
+          BASE_PATH: /
+          SITE_URL: https://${{ github.repository_owner }}.github.io
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4

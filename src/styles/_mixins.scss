@@ -1,0 +1,50 @@
+@use 'sass:math';
+
+// Fluid value between two viewport widths (px in, rem out).
+@function fluid($min, $max, $minvw: 360, $maxvw: 1440) {
+  $slope: math.div($max - $min, $maxvw - $minvw);
+  $base: $min - $slope * $minvw;
+  $remBase: math.div($base, 16);
+  $vw: $slope * 100;
+  @return clamp(#{math.div($min, 16)}rem, #{$remBase}rem + #{$vw}vw, #{math.div($max, 16)}rem);
+}
+
+@mixin container($max: 1320px, $pad: clamp(1.25rem, 5vw, 6rem)) {
+  width: 100%;
+  max-width: $max;
+  margin-inline: auto;
+  padding-inline: $pad;
+}
+
+@mixin focus-ring($color) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+}
+
+@mixin reduce-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+@mixin no-motion {
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

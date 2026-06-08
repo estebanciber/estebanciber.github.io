@@ -1,0 +1,348 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import {
+  profile,
+  contact,
+  video,
+  designPieces,
+  designProfile,
+  photography,
+  pullQuote,
+  spread,
+} from '../data/site';
+import { images } from '../data/images';
+import '../styles/editorial.scss';
+
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;1,6..96,400;1,6..96,500&family=Jost:wght@300;400;500;600&display=swap';
+const base = import.meta.env.BASE_URL;
+const home = base.replace(/\/?$/, '/');
+const marquee = ['Diseño para redes', 'Retrato', 'Fotografía nocturna', 'Producción de video', 'Dirección de arte'];
+---
+
+<Base
+  title={`${profile.name} — Portafolio`}
+  themeClass="t-editorial"
+  fonts={fonts}
+  accent="#9a5034"
+  cursor={true}
+>
+  <header class="mast">
+    <div class="mast__row">
+      <a class="logo" href={home}>MJ<em>·</em>Arévalo</a>
+      <nav class="nav" aria-label="Secciones">
+        <a href="#perfil">Perfil</a>
+        <a href="#diseno">Diseño</a>
+        <a href="#fotografia">Fotografía</a>
+        <a href="#audiovisual">Audiovisual</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <a class="mast__cta" href="#contacto"><span class="dot" aria-hidden="true"></span>Disponible</a>
+      <button
+        class="menu-btn"
+        type="button"
+        data-menu-btn
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Abrir menú"
+      >
+        <span class="menu-btn__bars" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="drawer" id="mobile-menu" data-drawer aria-hidden="true">
+    <nav class="drawer__nav" aria-label="Secciones">
+      <a href="#perfil"><span>01</span>Perfil</a>
+      <a href="#diseno"><span>02</span>Diseño &amp; Social</a>
+      <a href="#fotografia"><span>03</span>Fotografía</a>
+      <a href="#audiovisual"><span>04</span>Audiovisual</a>
+      <a href="#contacto"><span>05</span>Contacto</a>
+    </nav>
+    <div class="drawer__foot">
+      <a href={`mailto:${contact.email}`}>{contact.email}</a>
+      <a href={`tel:${contact.phoneHref}`}>{contact.phone}</a>
+      <span>{contact.location}</span>
+    </div>
+  </div>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero" aria-label="Presentación">
+      <div class="wrap">
+        <div class="hero__issue" data-reveal="up">
+          <span>Portafolio · {profile.year}</span>
+          <span>{profile.role}</span>
+          <span>{profile.city}</span>
+        </div>
+        <div class="hero__grid">
+          <div>
+            <p class="kicker" data-reveal="up">{profile.tagline}</p>
+            <h1 class="hero__title" data-split>{profile.first} {profile.last}</h1>
+            <p class="hero__lede" data-reveal="up" data-delay="0.15">{profile.intro}</p>
+            <ul class="hero__meta" data-stagger>
+              {profile.disciplines.map((d) => <li>{d}</li>)}
+            </ul>
+          </div>
+          <figure class="hero__figure" data-reveal="scale">
+            <Image
+              src={images.portraitHero}
+              alt="Retrato de María José Arévalo con gafas de sol y blusa terracota, enmarcada en una ventana"
+              widths={[480, 760, 980]}
+              sizes="(max-width: 860px) 92vw, 40vw"
+              loading="eager"
+              data-parallax="0.05"
+            />
+            <figcaption><span>Autorretrato</span><span>Quito</span></figcaption>
+          </figure>
+        </div>
+      </div>
+      <a class="scrollcue" href="#perfil" aria-label="Bajar a Perfil">
+        <span>Scroll</span><span class="line" aria-hidden="true"></span>
+      </a>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        {
+          Array.from({ length: 2 }).map(() => (
+            <>
+              {marquee.map((m) => (
+                <span>{m}<i>✦</i></span>
+              ))}
+            </>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- PERFIL -->
+    <section id="perfil" class="section">
+      <div class="wrap">
+        <div class="section__head" data-reveal="up">
+          <h2>Perfil</h2>
+          <p>Una mirada que cruza el diseño gráfico, la cámara y la sala de edición.</p>
+        </div>
+        <div class="perfil">
+          <div data-reveal="up">
+            <p class="perfil__lead">{profile.bioLead}</p>
+            <p class="perfil__body">{profile.bioBody}</p>
+            <dl class="perfil__stats" data-stagger>
+              {
+                profile.stats.map((s) => (
+                  <div>
+                    <dt>{s.value}</dt>
+                    <dd>{s.label}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </div>
+          <figure class="perfil__portrait" data-reveal="scale">
+            <Image
+              src={images.portraitMetro1}
+              alt="Retrato de María José en una estación de metro, con gafas y cabello rizado"
+              widths={[420, 720, 1000]}
+              sizes="(max-width: 760px) 92vw, 44vw"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPREAD -->
+    <section class="spread" aria-label="Imagen destacada">
+      <div class="spread__media">
+        <Image
+          src={spread.src}
+          alt={spread.alt}
+          widths={[760, 1200, 1800]}
+          sizes="100vw"
+          loading="lazy"
+          data-parallax="0.12"
+        />
+      </div>
+      <div class="wrap spread__cap">
+        <span class="kicker">{spread.kicker}</span>
+        <p>{spread.caption}</p>
+      </div>
+    </section>
+
+    <!-- DISEÑO -->
+    <section id="diseno" class="section">
+      <div class="wrap">
+        <div class="section__head" data-reveal="up">
+          <h2>Diseño <em>&amp; Social</em></h2>
+          <p>Piezas gráficas para la ASE UDLA, publicadas en su Instagram: fiestas, causas y conmemoraciones.</p>
+        </div>
+        <div class="design">
+          <div class="design__feature" data-reveal="up">
+            <div class="frame">
+              <Image
+                src={designProfile.src}
+                alt={designProfile.alt}
+                widths={[340, 520]}
+                sizes="(max-width: 860px) 92vw, 36vw"
+                loading="lazy"
+              />
+            </div>
+            <p>{designProfile.title} · {designProfile.context}</p>
+          </div>
+          <div class="design__cards" data-stagger>
+            {
+              designPieces.map((piece) => (
+                <article class="design__card">
+                  <figure>
+                    <Image src={piece.src} alt={piece.alt} widths={[360, 560]} sizes="(max-width: 860px) 46vw, 26vw" loading="lazy" />
+                  </figure>
+                  <div class="design__card-cap">
+                    <h3>{piece.title}</h3>
+                    <p>{piece.context}</p>
+                  </div>
+                </article>
+              ))
+            }
+            <article class="design__card">
+              <figure>
+                  <Image
+                    src={images.portraitMetro2}
+                    alt="Retrato editorial en estación de metro"
+                    widths={[360, 560]}
+                    sizes="(max-width: 860px) 46vw, 26vw"
+                    loading="lazy"
+                  />
+              </figure>
+              <div class="design__card-cap">
+                <h3>Dirección de arte</h3>
+                <p>Sesión en locación</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOTOGRAFÍA -->
+    <section id="fotografia" class="section">
+      <div class="wrap">
+        <div class="section__head" data-reveal="up">
+          <h2>Fotografía</h2>
+          <p>Retrato, la ciudad de noche y los espacios que la habitan. Disparada en Canon.</p>
+        </div>
+
+        <div class="photo">
+          <div class="photo__label" data-reveal="up">
+            <h3>Retrato</h3><span class="rule"></span><span class="ct">Personas · Luz natural</span>
+          </div>
+          <div class="gal gal--retrato" data-stagger>
+            {
+              photography.retrato.map((p) => (
+                <figure>
+                  <Image src={p.src} alt={p.alt} widths={[400, 720]} sizes="(max-width: 760px) 92vw, 30vw" loading="lazy" />
+                  <figcaption><strong>{p.caption}</strong><span>{p.meta}</span></figcaption>
+                </figure>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="photo">
+          <div class="photo__label" data-reveal="up">
+            <h3>Nocturna</h3><span class="rule"></span><span class="ct">Quito de noche</span>
+          </div>
+          <div class="gal" data-stagger>
+            {
+              photography.nocturna.map((p) => (
+                <figure>
+                  <Image src={p.src} alt={p.alt} widths={[400, 760]} sizes="(max-width: 760px) 46vw, 30vw" loading="lazy" />
+                  <figcaption><strong>{p.caption}</strong><span>{p.meta}</span></figcaption>
+                </figure>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="photo">
+          <div class="photo__label" data-reveal="up">
+            <h3>Espacios</h3><span class="rule"></span><span class="ct">Interiores · Locaciones</span>
+          </div>
+          <div class="gal" data-stagger>
+            {
+              photography.espacios.map((p) => (
+                <figure>
+                  <Image src={p.src} alt={p.alt} widths={[400, 760]} sizes="(max-width: 760px) 46vw, 30vw" loading="lazy" />
+                  <figcaption><strong>{p.caption}</strong><span>{p.meta}</span></figcaption>
+                </figure>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PULL QUOTE -->
+    <section class="quote" aria-label="Cita">
+      <div class="wrap">
+        <blockquote data-split data-split-delay="0.1">{pullQuote.text}</blockquote>
+        <cite data-reveal="up">{pullQuote.attribution}</cite>
+      </div>
+    </section>
+
+    <!-- AUDIOVISUAL -->
+    <section id="audiovisual" class="section">
+      <div class="wrap">
+        <div class="section__head" data-reveal="up">
+          <h2>Audiovisual</h2>
+          <p>Producción y edición de video. Una pieza corta, pensada para vertical.</p>
+        </div>
+        <div class="av">
+          <div class="av__copy" data-reveal="up">
+            <h3>Del guion al corte final</h3>
+            <p>{video.blurb}</p>
+            <a class="av__link" href={video.url} target="_blank" rel="noopener">Ver en YouTube →</a>
+          </div>
+          <div class="av__player" data-reveal="scale">
+            <iframe
+              src={video.embed}
+              title={video.title}
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto" class="section contact">
+      <div class="wrap">
+        <p class="kicker" data-reveal="up">Hablemos</p>
+        <div class="contact__grid">
+          <h2 data-split>Cuéntame tu proyecto</h2>
+          <div class="contact__links" data-stagger>
+            <a href={`mailto:${contact.email}`}><small>Correo</small>{contact.email}</a>
+            <a href={`tel:${contact.phoneHref}`}><small>Teléfono</small>{contact.phone}</a>
+            <span><small>Ubicación</small>{contact.location}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot__row">
+      <span>© {profile.year} {profile.name}</span>
+      <a class="foot__top" href="#top">Volver arriba ↑</a>
+      <span>Portafolio · {profile.role} · UDLA</span>
+    </div>
+  </footer>
+</Base>
+
+<style lang="scss">
+  .t-editorial .design__card-cap {
+    padding: 0.85rem 1rem 1.05rem;
+  }
+</style>
